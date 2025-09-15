@@ -1,0 +1,82 @@
+Btap1: 
+
+Docker, docker-composer là gì?
+
+- Docker: nền tảng để develop, deploy, run với container, tạo môi trường độc lập và tách biệt (container).
+- Docker Client: là bạn, tương tác với docker qua command trong terminal, API gửi lệnh Docker Daemon
+- Docker Daemon: server Docker nhận request từ Docker API, quản lý images, containers, networks, volumes
+- Docker Volumes: cách tốt nhất để lưu trữ data liên tục cho sử dụng và tạo apps, chia sẻ file
+- Docker Registry: lưu trữ riêng Docker Images (default).
+- Docker Repository: tập hợp Docker Images cùng tên khác tag
+- Docker Networking: kết nối container, có thể trên 1 or nhiều host
+- Docker Compose: công cụ để run app với nhiều Docker containers(chỉ nên cho 1 process), cho phép config command trong file docker-compose.yml để sử dụng lại
+- Docker Swarm: phối hợp triển khai container
+- Docker Services: các containers trong production. 1 service chỉ run 1 image nhưng mã hoá cách thức để run image (port, bao bản sao container để Service run đạt hiệu năng cần thiết và lập tức)
+- Docker Image: file không thay đổi (read-only)  (→ đgl snapshots), chứa source code, lib, dependencies, tools và các file khác cần thiết để chạy app, đại diện cho app và virtual environment tại 1 thời điểm cụ thể.
+    - chỉ là các mẫu, không thể run, làm cơ sở xây dựng container, → container là một image đang chạy, có thêm một lớp ghi lên trên image để có thể sửa đổi
+    - khi chạy môi trường containerized, về cở bản, tạo một bản read-write của image layer (container layer, tham chiếu đến image layer, Copy-on-write(copy từ image layer và sửa ở đây))
+    - có thể tạo vô số image từ một image base bằng cách thay đổi trạng thái và lưu trạng thái hiện có thì sẽ tạo một image mới với 1 layer trên nó
+    - Docker Image bao gồm một loạt layer, khác nhau nhưng có nguồn gốc từ layer trước
+    
+    ![image.png](attachment:97bbb391-69a4-4959-bea9-2c609fa26a5d:image.png)
+    
+- Docker Container: run-time environment cho phép chạy app độc lập
+    - Khác máy ảo (VM), sự ảo hoá virutalization ở tầng app, chứ không phải tầng phần cứng hardware level
+    - Kernel: phần lõi hệ điều hành, cầu nối giữa phần cứng và phần mềm
+        - Khi mở file, phần mềm k đọc từ ổ cứng mà gửi yêu cầu xuống kernel, kernel giao tiếp với phần cứng và trả dữ liệu về
+        - Khi chạy process, kernel cấp phát RAM, CPU time, quản lý quyền truy cập
+    - VM có Kernel riêng (tốn tài nguyên), còn Container dùng chung với máy chủ
+    - Image tồn tại được mà không cần Container, còn Container cần image, sử dụng nó để tạo run-time environment cho app chạy trên đó
+- Docker file: gồm instruction để tạo ra Docker image, chạy một loạt command và tạo ra 1 Docker Image (câu lệnh docker build)
+    - Sau đó Image được sử dụng như template(base), developers copy và sd để chạy app. Tạo container bằng câu lệnh docker create
+
+Linux vs Unix vs BSD hay *nix? macOS thuộc loại nào?
+
+Unix: hđh ra đời đầu, lập trình bằng C
+
+BSD: *nix, được dùng để phát trong networking, có nhiều điểm khác biệt với Unix
+
+GNU: hướng đến free software, có nhiều tools và software nhưng kco kernel
+
+Linux: kernel, không phải *nix, là phiên bản tự clone của Unix
+
+Linux Distributions (Distro): GNU/Linux nhưng tự config Kernel, cài đặt software,…, kết hợp Linux Kernel với utilities, package manger tạo OS hoàn 
+
+*nix: chỉ những OS có chứng nhận SUS (Single Unix Specification), có 3 loại
+
+- Genetic Unix: OS có liên quan trực tiếp tới Codebase của Unix
+- Trademark Unix: OS thỏa mãn SUS và được dùng thương hiệu UNIX
+- Functional Unix: hoạt động giống Unix (như Linux)
+
+macOS dựa trên nền tảng BSD, *nix.
+
+Alpine vs Ubuntu? (Distro)
+
+- Basic:
+    - Alpine size bé hơn nhiều vì hướng tới minimalistic, startup nhanh hơn, attack surface bé hơn
+    - Ubuntu nặng hơn nhưng richer environment, nhiều core tooles, compatibility tốt hơn và quen thuộc với Linux
+- Compatibility
+    - Alpine sử dụng musl libc
+    - Ubuntu sử dụng glibc, standard C library, được sd bởi Linux distributions (hđh Linux)
+    - → Ubuntu tốt hơn khi liên quan tới ngôn ngữ thông dịch (interpreted language Py, Ruby, Node.js) hoặc dựa vào prebuilt binaries (file exe đã được biên dịch sẵn) hoặc complex language runtime (các ngôn ngữ cần nhiều thành phần đi kèm như Java (JVM) hay Python (cần interpreter và nhiều thư viện), Go và C chỉ cần binary đã compile nên không phải)
+- Package Manager
+    - Alpine: apk (Alpine Package Keeper), nhanh gọn tối giản
+    - Ubuntu: apt (Andvanced Package Tool)- nhiều repo và precompiled package
+- Multistage build
+    - Alpine tốt khi là stage cuối, khi sản phẩm đã sẵn sàng và chỉ có những ths cần thiết
+    - Ubuntu thường được dùng trong giai đoạn xây dựng vì toolchain availability, tốt cho việc compiling source code hoặc sử lý dependencies phức tạp trước khi được rút gọn và tối ưu.
+- **Use Cases:**
+    - Alpine Linux's small size and minimalistic design make it well-suited for lightweight and resource-constrained environments.
+    - Ubuntu, with its larger footprint and broader package selection, is suitable for a wide range of use cases. It can be used for desktop usage, server deployments, and development environments that require a rich set of tools and libraries.
+
+VNC (hay khi tìm hiểu về hệ điều hành mã ngồn mở) 
+
+- Virutal Network Computing: truy cập vào máy tính từ xa
+- Cơ chế: Client/Server
+- Giao thức: VNC, TCP: truy cập giao diện đồ hoạ từ xa
+- VNC Client chia sẻ input (bàn phím, chuột,..) với VNC Server, ghi lại và chia sẻ lại cho VNC Client
+
+VNC vs Teamview:
+
+- VNC: tạo màn hình ảo
+- Teamview: phản chiếu màn hình thật

@@ -3,7 +3,8 @@ FROM ubuntu:22.04
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Cập nhật, cài openssh-server, sudo, tools cơ bản
-RUN apt-get update && apt-get install -y \
+# Cập nhật kho ứng dụng
+RUN apt-get update && apt-get install -y \ 
     openssh-server sudo ca-certificates curl wget nano less \
  && rm -rf /var/lib/apt/lists/*
 
