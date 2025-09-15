@@ -1,0 +1,12 @@
+version: "3.8"
+services:
+  vm:
+    build: .
+    container_name: docker-vm-lab
+    ports:
+      - "2222:22" # SSH (host:2222 -> container:22)
+      - "5901:5901" # VNC (host:5901 -> container:5901) — tốt nhất chặn trực tiếp, dùng SSH tunnel
+    volumes:
+      - ./data:/home/dev # lưu dữ liệu user (optional)
+    tty: true
+    stdin_open: true
